@@ -12,7 +12,7 @@ import ReactLogo from '../static/icons/react.png';
 import VueLogo from '../static/icons/vue.png';
 import Arrow from "../static/icons/arrow.png";
 
-const Options = styled.div`
+const Page = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 63px;
@@ -36,7 +36,7 @@ const Options = styled.div`
     color: #606060;
   }
 `
-const Select = styled.select`
+const Select = styled.div`
   cursor: pointer;
   width: 240px;
   height: 32px;
@@ -46,16 +46,41 @@ const Select = styled.select`
   padding: 0 12px;
   margin-bottom: 38px;
   font-size: 14px;
-  /* appearance: none; */
-  background-image: url(${Arrow});
-  option{
-    line-height: 1.57;
-    padding: 12px 12px;
-    margin: 12px;
-  }
+  position: relative;
   @media (max-height: 600px) {
     margin-bottom: 15px;
   }
+  .main-option{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    :hover{background: none;}
+    img{
+      height: 20px;
+    }
+  }
+`
+const Option = styled.div`
+  display: flex;
+  align-items: center;
+  line-height: 1.57;
+  padding: 6px 0;
+  width: 240px;
+  :hover{
+    background-color: #eaeaea;
+  }
+`
+const DeployedMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  padding: 15px 144px 12px 10px;
+  width: 110px; 
+  box-shadow: 0 2px 2px 0 #dad8d8;
+  z-index: 99;
+
 `
 const MainField = styled.div`
   width: 62vw;
@@ -77,6 +102,7 @@ export default function Main() {
   const [currentState, setCurrentState]= useState(false);
   const [position, setPosition] = useState(1);
   const [interval, setInterval] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const [deployMenu, setDeployMenu] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem('filter')){
@@ -100,8 +126,10 @@ export default function Main() {
     setNews(arrData);
   }
   function handleSelect(e){
-    localStorage.setItem('filter',e.target.value);
-    GetNews(e.target.value,position-1).then(data=>filterAndUpdate(data.hits));
+    localStorage.setItem('filter',e.target.id);
+    GetNews(e.target.id,position-1).then(data=>filterAndUpdate(data.hits));
+    setDeployMenu(false);
+    console.log(deployMenu);
   }
 
   return (
@@ -115,22 +143,30 @@ export default function Main() {
           opacity: 0;
         }
         `}>
-        <Options>
+        <Page>
           <div onClick={()=>setSelected('all')} className={selected==='all'?'selected':''}>All</div>
           <div onClick={()=>setSelected('favs')} className={selected==='all'?'':'selected'}>My faves</div>
-        </Options>
-        <Select name='language' className={selected==='all'?'':'hidden'} defaultValue={localStorage.getItem('filter')?localStorage.getItem('filter'):''} onChange={(e)=>handleSelect(e)}>
-          <option hidden >Select your news</option>
-          <option value='angular' data-img_src={AngularLogo}>Angular</option>
-          <option value='reactjs' data-img_src={ReactLogo}>Reactjs</option>
-          <option value='vuejs' data-img_src={VueLogo}>Vuejs</option>
+        </Page>
+        <Select className={selected==='all'?'':'hidden'}>
+          <Option className='main-option' onClick={()=>deployMenu?setDeployMenu(false):setDeployMenu(true)}>{localStorage.getItem('filter')?localStorage.getItem('filter').charAt(0).toUpperCase()+localStorage.getItem('filter').slice(1):'Select your news'}<img src={Arrow} alt='arrow'></img></Option>
+          {deployMenu===true&&<DeployedMenu>
+            <Option id='angular' onClick={(e)=>handleSelect(e)}><img css={css`margin-right:13px;height:24px;`} src={AngularLogo} alt='logo'/> Angular</Option>
+            <Option id='reactjs' onClick={(e)=>handleSelect(e)}><img css={css`margin-right:13px;height:24px;`} src={ReactLogo} alt='logo'/>Reactjs</Option>
+            <Option id='vuejs' onClick={(e)=>handleSelect(e)}><img css={css`margin-right:13px;height:24px;`} src={VueLogo} alt='logo'/>Vuejs</Option>
+          </DeployedMenu>}
         </Select>
         <MainField>
-          {selected==='all'?news.map((item,index)=>{
-            return <Card key={index} item={item}/>}):localStorage.getItem('favorites')?JSON.parse(localStorage.getItem('favorites')).map((item,index)=>{
-              return <Card key={index} item={item}/>}):null}
+          {selected==='all'?news.length?news.map((item,index)=><Card key={index} item={item}/>):<div css={css`
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5vh;
+            color: #606060;
+            `}>Try selecting an option</div>:
+            localStorage.getItem('favorites')?JSON.parse(localStorage.getItem('favorites')).map((item,index)=><Card key={index} item={item}/>):null}
         </MainField>
-        {selected==='all'?<Pagination data={news} currentPosition={position} changeCurrentPosition={setPosition} interval={interval} setInterval={setInterval}/>:null}
+        {selected==='all'?news.length?<Pagination data={news} currentPosition={position} changeCurrentPosition={setPosition} interval={interval} setInterval={setInterval}/>:null:null}
       </div>
     </UpdateContext.Provider>
   );
