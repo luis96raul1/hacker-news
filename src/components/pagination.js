@@ -11,6 +11,9 @@ const MainField = styled.div`
   @media (max-height: 1000px) {
     height: 10vh;
   }
+  @media (max-height: 430px) {
+    height: 13vh;
+  }
 .active{
   background: #1890ff;
   color: white;

@@ -7,6 +7,11 @@ import Card from '../components/card';
 import GetNews from "../services/getNews";
 import Pagination from "../components/pagination";
 
+import AngularLogo from '../static/icons/angular.png';
+import ReactLogo from '../static/icons/react.png';
+import VueLogo from '../static/icons/vue.png';
+import Arrow from "../static/icons/arrow.png";
+
 const Options = styled.div`
   display: flex;
   justify-content: center;
@@ -40,6 +45,14 @@ const Select = styled.select`
   border: solid 1px #2e2e2e;
   padding: 0 12px;
   margin-bottom: 38px;
+  font-size: 14px;
+  /* appearance: none; */
+  background-image: url(${Arrow});
+  option{
+    line-height: 1.57;
+    padding: 12px 12px;
+    margin: 12px;
+  }
   @media (max-height: 600px) {
     margin-bottom: 15px;
   }
@@ -53,6 +66,9 @@ const MainField = styled.div`
   grid-template-rows: repeat(4, 1fr);
   grid-gap: 30px 40px;
   overflow: auto;
+  @media (max-height: 430px) {
+    height: 40vh;
+  }
 `
 export const UpdateContext = createContext();
 export default function Main() {
@@ -104,9 +120,9 @@ export default function Main() {
         </Options>
         <Select name='language' className={selected==='all'?'':'hidden'} defaultValue={localStorage.getItem('filter')?localStorage.getItem('filter'):''} onChange={(e)=>handleSelect(e)}>
           <option hidden >Select your news</option>
-          <option value='angular'>Angular</option>
-          <option value='reactjs'>Reactjs</option>
-          <option value='vuejs'>Vuejs</option>
+          <option value='angular' data-img_src={AngularLogo}>Angular</option>
+          <option value='reactjs' data-img_src={ReactLogo}>Reactjs</option>
+          <option value='vuejs' data-img_src={VueLogo}>Vuejs</option>
         </Select>
         <MainField>
           {selected==='all'?news.map((item,index)=>{
