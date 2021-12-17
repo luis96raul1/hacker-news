@@ -118,7 +118,11 @@ export default function Main() {
     // eslint-disable-next-line array-callback-return
     data.map((element)=>{
       if(arrData.length!==0){
-        arrData.some((unit)=>unit.story_id===element.story_id)?console.log(''):(element.created_at&&element.author&&element.story_title&&element.story_url)?arrData.push(element):console.log('');
+        if(!arrData.some((unit)=>unit.story_id===element.story_id)){
+          if(element.created_at&&element.author&&element.story_title&&element.story_url){
+            arrData.push(element);
+          }
+        }
       }else{
         arrData.push(element);
       }
@@ -129,7 +133,6 @@ export default function Main() {
     localStorage.setItem('filter',e.target.id);
     GetNews(e.target.id,position-1).then(data=>filterAndUpdate(data.hits));
     setDeployMenu(false);
-    console.log(deployMenu);
   }
 
   return (
