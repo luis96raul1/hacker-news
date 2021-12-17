@@ -1,6 +1,7 @@
 import { Global, css } from '@emotion/react';
 import Header from './components/header';
 import Main from './pages/main';
+import './static/styles/style.css'
 
 const cssGlobal = css`
   body {
