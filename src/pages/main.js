@@ -89,6 +89,7 @@ export default function Main() {
 
   function filterAndUpdate(data){
     const arrData = []
+    // eslint-disable-next-line array-callback-return
     data.map((element)=>{
       if(arrData.length!==0){
         arrData.some((unit)=>unit.story_id===element.story_id)?console.log(''):(element.created_at&&element.author&&element.story_title&&element.story_url)?arrData.push(element):console.log('');
