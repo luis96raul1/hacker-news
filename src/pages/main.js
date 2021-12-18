@@ -130,8 +130,8 @@ export default function Main() {
     setNews(arrData);
   }
   function handleSelect(e){
-    localStorage.setItem('filter',e.target.id);
-    GetNews(e.target.id,position-1).then(data=>filterAndUpdate(data.hits));
+    localStorage.setItem('filter',e.target.closest('div').id);
+    GetNews(e.target.closest('div').id,position-1).then(data=>filterAndUpdate(data.hits));
     setDeployMenu(false);
   }
 
